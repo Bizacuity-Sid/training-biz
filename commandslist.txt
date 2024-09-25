@@ -100,3 +100,7 @@
   100  2024-09-25 08:22:40 git commit -m"test"
   101  2024-09-25 08:22:46 git push origin main
   102  2024-09-25 08:24:26 history > commandslist.txt
+  103  2024-09-25 08:24:35 git add .
+  104  2024-09-25 08:24:38 git commit -m"test"
+  105  2024-09-25 08:24:43 git push origin main
+  106  2024-09-25 08:25:50 history > commandslist.txt
