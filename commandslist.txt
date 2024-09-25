@@ -96,3 +96,7 @@
    96  2024-09-25 08:22:22 export HISTTIMEFORMAT="%F %T "
    97  2024-09-25 08:22:22 source ~/.bashrc
    98  2024-09-25 08:22:22 history > commandslist.txt
+   99  2024-09-25 08:22:32 git add .
+  100  2024-09-25 08:22:40 git commit -m"test"
+  101  2024-09-25 08:22:46 git push origin main
+  102  2024-09-25 08:24:26 history > commandslist.txt
