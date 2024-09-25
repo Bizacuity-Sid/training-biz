@@ -1,8 +1,0 @@
-Filesystem      Size  Used Avail Use% Mounted on
-devtmpfs        4.0M     0  4.0M   0% /dev
-tmpfs           2.0G     0  2.0G   0% /dev/shm
-tmpfs           783M   17M  766M   3% /run
-/dev/xvda4       29G   15G   15G  51% /
-/dev/xvda3      960M  262M  699M  28% /boot
-/dev/xvda2      200M  7.1M  193M   4% /efi
-tmpfs           392M  4.0K  392M   1% /run/user/1000
