@@ -1,0 +1,98 @@
+    1  2024-09-25 08:19:00 sudo yum update
+    2  2024-09-25 08:19:00 sudo yum install java-11-openjdk
+    3  2024-09-25 08:19:00 sudo yum install wget
+    4  2024-09-25 08:19:00 hostnmectl
+    5  2024-09-25 08:19:00 hostctl
+    6  2024-09-25 08:19:00 hostnamectl
+    7  2024-09-25 08:19:00 wget https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+    8  2024-09-25 08:19:00 ll
+    9  2024-09-25 08:19:00 wget https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/getPackage/oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm
+   10  2024-09-25 08:19:00 ll
+   11  2024-09-25 08:19:00 sudo yum localinstall oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm 
+   12  2024-09-25 08:19:00 sudo yum localinstall oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm --no-best
+   13  2024-09-25 08:19:00 sudo yum --no-best localinstall oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm
+   14  2024-09-25 08:19:00 sudo yum localinstall --no-best oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm
+   15  2024-09-25 08:19:00 sudo yum localinstall oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm 
+   16  2024-09-25 08:19:00 ll
+   17  2024-09-25 08:19:00 sudo yu localinstall oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm 
+   18  2024-09-25 08:19:00 sudo yum localinstall oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm 
+   19  2024-09-25 08:19:00 rm oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm 
+   20  2024-09-25 08:19:00 wget https://yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64/getPackage/oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm
+   21  2024-09-25 08:19:00 sudo yum localinstall oracle-database-preinstall-21c-1.0-1.el
+   22  2024-09-25 08:19:00 ll
+   23  2024-09-25 08:19:00 sudo yum localinstall  oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm
+   24  2024-09-25 08:19:00 oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm
+   25  2024-09-25 08:19:00 rm oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm
+   26  2024-09-25 08:19:00 wget https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm?AuthParam=1727012590_7d4a6531371d0e38a86ea082b24558f7
+   27  2024-09-25 08:19:00 # dnf -y localinstall oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+   28  2024-09-25 08:19:00  dnf -y localinstall oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+   29  2024-09-25 08:19:00 sudo  dnf -y localinstall oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+   30  2024-09-25 08:19:00 $ sudo -s
+   31  2024-09-25 08:19:00 sudo -i
+   32  2024-09-25 08:19:00 ll
+   33  2024-09-25 08:19:00 cd ..
+   34  2024-09-25 08:19:00 l
+   35  2024-09-25 08:19:00 ll
+   36  2024-09-25 08:19:00 cd /home/ec2-user/
+   37  2024-09-25 08:19:00 ll
+   38  2024-09-25 08:19:00 rm oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm 
+   39  2024-09-25 08:19:00 vi .bash_profile 
+   40  2024-09-25 08:19:00 wget https://drive.google.com/file/d/10j5j_fLYtFrba8xO11fpt04qfGDc32w0/view?usp=drive_link
+   41  2024-09-25 08:19:00 wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=10j5j_fLYtFrba8xO11fpt04qfGDc32w0' -O desired_filename
+   42  2024-09-25 08:19:00 ll
+   43  2024-09-25 08:19:00 rm desired_filename 
+   44  2024-09-25 08:19:00 wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=10j5j_fLYtFrba8xO11fpt04qfGDc32w0' -O classicmodels.sql
+   45  2024-09-25 08:19:00 sqlplus
+   46  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   47  2024-09-25 08:19:00 sqlplus
+   48  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   49  2024-09-25 08:19:00 cd /bin
+   50  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   51  2024-09-25 08:19:00 imp classicmodels/classicmodels1 FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   52  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   53  2024-09-25 08:19:00 export NLS_LANG=AMERICAN_AMERICA.UTF8
+   54  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   55  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y CHARACTERSET=UTF8
+   56  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.sql log=/home/ec2-user/import.log FULL=Y
+   57  2024-09-25 08:19:00 file /home/ec2-user/classicmodels.sql
+   58  2024-09-25 08:19:00 clear
+   59  2024-09-25 08:19:00 wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=10j5j_fLYtFrba8xO11fpt04qfGDc32w0' -O classicmodels.dmp
+   60  2024-09-25 08:19:00 sudo wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=10j5j_fLYtFrba8xO11fpt04qfGDc32w0' -O classicmodels.dmp
+   61  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   62  2024-09-25 08:19:00 ll
+   63  2024-09-25 08:19:00 cd /home/ec2-user/
+   64  2024-09-25 08:19:00 ll
+   65  2024-09-25 08:19:00 sudo wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=10j5j_fLYtFrba8xO11fpt04qfGDc32w0' -O classicmodels.dmp
+   66  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   67  2024-09-25 08:19:00 cd /bin
+   68  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   69  2024-09-25 08:19:00 cd /home/ec2-user/
+   70  2024-09-25 08:19:00 ll
+   71  2024-09-25 08:19:00 cat import.log 
+   72  2024-09-25 08:19:00 chown ec2-user:ec2-user classicmodels.dmp 
+   73  2024-09-25 08:19:00 sudo chown ec2-user:ec2-user classicmodels.dmp 
+   74  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   75  2024-09-25 08:19:00 ll
+   76  2024-09-25 08:19:00 impdp classicmodels/classicmodels DIRECTORY=/home/ec2-user DUMPFILE=classicmodels.dmp LOGFILE=import.log FULL=Y
+   77  2024-09-25 08:19:00 impdp classicmodels/classicmodels DIRECTORY= /  DUMPFILE=classicmodels.dmp LOGFILE=import.log FULL=Y
+   78  2024-09-25 08:19:00 impdp classicmodels/classicmodels DIRECTORY=/home/ec2-user DUMPFILE=classicmodels.dmp LOGFILE=import.log FULL=Y
+   79  2024-09-25 08:19:00 cd $ORACLE_HOME
+   80  2024-09-25 08:19:00 cd bin/
+   81  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   82  2024-09-25 08:19:00 cd /home/ec2-user/
+   83  2024-09-25 08:19:00 rm classicmodels.sql 
+   84  2024-09-25 08:19:00 rm classicmodels.dmp 
+   85  2024-09-25 08:19:00 rm import.log 
+   86  2024-09-25 08:19:00 ll
+   87  2024-09-25 08:19:00 imp classicmodels/classicmodels FILE=/home/ec2-user/classicmodels.dmp log=/home/ec2-user/import.log FULL=Y
+   88  2024-09-25 08:19:00 exit
+   89  2024-09-25 08:20:07 export HISTTIMEFORMAT="%F %T "
+   90  2024-09-25 08:20:07 source ~/.bashrc
+   91  2024-09-25 08:20:07 history > commandslist.txt
+   92  2024-09-25 08:20:29 git clone https://github.com/siddharthnair31/training-biz.git
+   93  2024-09-25 08:21:27 sudo yum install git
+   94  2024-09-25 08:21:41 git clone https://github.com/siddharthnair31/training-biz.git
+   95  2024-09-25 08:21:51 cd training-biz/
+   96  2024-09-25 08:22:22 export HISTTIMEFORMAT="%F %T "
+   97  2024-09-25 08:22:22 source ~/.bashrc
+   98  2024-09-25 08:22:22 history > commandslist.txt
