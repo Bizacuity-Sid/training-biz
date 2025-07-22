@@ -12,7 +12,7 @@ cust_rev as
     inner join orders o on c.customernumber = o.customernumber
     inner join orderdetails od on o.ordernumber = od.ordernumber
   group by c.customernumber,
-           c.customernamewith 
+           c.customername
 )
 select cr.*,
        tr.*,
