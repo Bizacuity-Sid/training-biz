@@ -1,62 +1,43 @@
-name: Oracle SQL Validation
+mkdir -p results
+mkdir -p reports
+touch reports/report.txt
 
-on:
-  push:
-    branches:
-        -  main
+for file in queries/*.sql; do
+  base=$(basename "$file" .sql)
+  echo "🔄 Processing $base..."
 
-jobs:
-  validate-sql:
-    runs-on: ubuntu-latest
+  echo "▶️ Running student query..."
+  if python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"; then
+    echo "✅ Student query ran."
+  else
+    echo "❌ Failed to run student query for $base" >> reports/report.txt
+    continue
+  fi
 
-    env:
-      ORACLE_CONN_STR: ${{ secrets.ORACLE_CONN_STR }}
+  echo "▶️ Running solution query..."
+  if python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"; then
+    echo "✅ Solution query ran."
+  else
+    echo "❌ Failed to run solution query for $base" >> reports/report.txt
+    continue
+  fi
 
-    steps:
-    - name: 🛎 Checkout repository
-      uses: actions/checkout@v3
+  echo "🔍 Comparing outputs..."
+  if [[ -f results/${base}_user.out && -f results/${base}_solution.out ]]; then
+    if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
+      echo "✅ Output match for $base" >> reports/report.txt
+    else
+      echo "❌ Output mismatch for $base" >> reports/report.txt
+      echo "---- Diff ----" >> reports/report.txt
+      diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt
+      echo "--------------" >> reports/report.txt
+    fi
+  else
+    echo "⚠️ Missing output files for $base" >> reports/report.txt
+  fi
 
-    - name: 🔧 Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: 📦 Install dependencies
-      run: pip install oracledb
-
-    - name: 🧪 Run tests and SQL guideline checks
-      run: |
-        mkdir -p results
-        mkdir -p reports
-
-        for file in queries/*.sql; do
-          base=$(basename "$file" .sql)
-          echo "🔄 Processing $base..."
-
-          echo "▶️ Running student query..."
-          python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"
-
-          echo "▶️ Running solution query..."
-          python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"
-
-          echo "🔍 Comparing outputs..."
-          if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
-            echo "✅ Output match for $base" >> reports/report.txt
-          else
-            echo "❌ Output mismatch for $base" >> reports/report.txt
-            echo "---- Diff ----" >> reports/report.txt
-            diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt
-            echo "--------------" >> reports/report.txt
-          fi
-
-          echo "🧪 Running SQL guideline checker..."
-          echo "📝 Guidelines for $base.sql:" >> reports/report.txt
-          python sql_guideline_checker.py "queries/$base.sql" >> reports/report.txt
-          echo "" >> reports/report.txt
-        done
-
-    - name: 📤 Upload full report
-      uses: actions/upload-artifact@v4
-      with:
-        name: sql-validation-report
-        path: reports/report.txt
+  echo "🧪 Running SQL guideline checker..."
+  echo "📝 Guidelines for $base.sql:" >> reports/report.txt
+  python sql_guideline_checker.py "queries/$base.sql" >> reports/report.txt
+  echo "" >> reports/report.txt
+done
