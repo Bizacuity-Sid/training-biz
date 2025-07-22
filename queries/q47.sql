@@ -1,4 +1,5 @@
-SELECT customernumber,
-       SUM(amount) AS total_amount
+SELECT paymentDate,
+       SUM(amount) AS total
 FROM payments
-GROUP BY customernumber;
+GROUP BY paymentDate
+ORDER BY paymentDate;

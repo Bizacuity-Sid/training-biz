@@ -1,7 +1,8 @@
-SELECT p.productline,
-       SUM((od.priceeach - p.buyprice)*od.quantityordered) AS profit
-FROM orderdetails od
-  JOIN products p ON od.productcode = p.productcode
-GROUP BY p.productline
-ORDER BY profit DESC,
-         Productline
+SELECT p.productCode,
+       p.productName,
+       SUM(od.quantityOrdered*od.priceEach) AS revenue
+FROM products p
+  JOIN orderdetails od ON od.productCode = p.productCode
+GROUP BY p.productCode,
+         p.productName
+ORDER BY p.productCode;

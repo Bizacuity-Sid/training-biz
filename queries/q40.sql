@@ -1,4 +1,4 @@
-SELECT SUM(od.priceeach*od.QUANTITYORDERED) AS Total_value
+SELECT COUNT(o.orderNumber) AS total
 FROM orders o
-  JOIN orderdetails od ON o.ordernumber = od.ordernumber
-WHERE o.status = 'On Hold';
+  JOIN customers c ON c.customerNumber = o.customerNumber
+WHERE c.customerName = 'Herkku Gifts';

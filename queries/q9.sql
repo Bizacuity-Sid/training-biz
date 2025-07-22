@@ -1,4 +1,4 @@
-SELECT concat(e.firstname,e.lastname) AS Employee
-FROM Employees e
-  JOIN Offices o ON e.officecode = o.officecode
-WHERE LOWER(o.city) = 'boston';
+SELECT p.productName
+FROM products p
+  LEFT JOIN orderdetails od ON od.productCode = p.productCode
+WHERE od.productCode IS NULL;

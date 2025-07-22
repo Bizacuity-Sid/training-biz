@@ -1,2 +1,5 @@
-SELECT MIN(amount) AS Min_Payment
-FROM payments;
+SELECT productline,
+       COUNT(productCode) AS total
+FROM products
+GROUP BY productline
+ORDER BY productline;

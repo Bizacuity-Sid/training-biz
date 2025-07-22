@@ -1,4 +1,4 @@
-SELECT COUNT(o.ordernumber) AS Total_Orders
-FROM orders o
-  JOIN customers c ON o.customernumber = c.customernumber
-WHERE c.customername = 'Herkku Gifts';
+SELECT SUM(p.amount) AS totalpay
+FROM payments p
+  JOIN customers c ON c.customerNumber = p.customerNumber
+WHERE c.customerName = 'Atelier graphique';

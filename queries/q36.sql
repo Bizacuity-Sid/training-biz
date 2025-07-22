@@ -1,2 +1,2 @@
-SELECT AVG((msrp - buyprice) / buyprice*100) AS Markup_percentage
-FROM products;
+SELECT MIN(amount) AS minimum
+FROM payments;

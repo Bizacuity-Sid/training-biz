@@ -1,13 +1,10 @@
-SELECT e.employeenumber,
-       e.firstname,
-       e.lastname,
-       SUM(0.05*(od.priceeach*quantityordered)) AS tot_amount
-FROM orderdetails od
-  JOIN orders o ON od.ordernumber = o.ordernumber
-  JOIN customers c ON o.customernumber = c.customernumber
-  JOIN employees e ON c.salesrepemployeenumber = e.employeenumber
-GROUP BY e.employeenumber,
-         e.firstname,
-         e.lastname
-ORDER BY e.lastname,
-         e.firstname;
+SELECT c.customerName,
+       o.orderNumber,
+       SUM(od.quantityOrdered*od.priceEach) AS amt
+FROM customers c
+  JOIN orders o ON o.customerNumber = c.customerNumber
+  JOIN orderdetails od ON od.orderNumber = o.orderNumber
+GROUP BY o.orderNumber,
+         c.customerName
+HAVING SUM(od.quantityOrdered*od.priceEach) > 25000
+ORDER BY amt DESC;

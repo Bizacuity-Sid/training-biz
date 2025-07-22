@@ -1,2 +1,2 @@
-SELECT SUM(amount) AS Total_Payment
-FROM payments;
+SELECT COUNT(employeeNumber) AS no_of_employee
+FROM employees;

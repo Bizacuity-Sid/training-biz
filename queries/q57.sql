@@ -1,24 +1,28 @@
-WITH total_ordered AS
+WITH value_ordered AS
 (
-  SELECT EXTRACT(MONTH FROM o.orderdate) AS Month_order,
-         SUM(od.priceeach*od.quantityordered) AS tot_ordered
-  FROM orderdetails od
-    JOIN orders o ON od.ordernumber = o.ordernumber
-  WHERE EXTRACT(YEAR FROM o.orderdate) = 2004
-  GROUP BY EXTRACT(MONTH FROM o.orderdate)
+  SELECT o.customerNumber,
+         SUM(od.quantityOrdered*od.priceEach) AS orderedval
+  FROM orders o
+    JOIN orderdetails od ON od.orderNumber = o.orderNumber
+  WHERE EXTRACT(YEAR FROM o.orderDate) = 2004
+  AND   EXTRACT(MONTH FROM o.orderDate) = 5
+  GROUP BY o.customerNumber
 ),
-total_amount AS
+paid AS
 (
-  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment,
-         SUM(amount) AS tot_amount
-  FROM payments
-  WHERE EXTRACT(YEAR FROM paymentdate) = 2004
-  GROUP BY EXTRACT(MONTH FROM paymentdate)
+  SELECT p.customerNumber,
+         SUM(p.amount) AS totalpaid
+  FROM payments p
+  WHERE EXTRACT(YEAR FROM p.paymentDate) = 2004
+  AND   EXTRACT(MONTH FROM p.paymentDate) = 5
+  GROUP BY p.customerNumber
 )
-SELECT t1.Month_order,
-       t1.tot_ordered,
-       t2.tot_amount,
-       (t2.tot_amount / t1.tot_ordered) AS ratio
-FROM total_ordered t1
-  JOIN total_amount t2 ON t1.Month_order = t2.Month_payment
-ORDER BY t1.Month_order
+SELECT c.customerNumber,
+       c.customerName,
+       COALESCE(o.orderedval,0) AS orderedval,
+       COALESCE(p.totalpaid,0) AS totalpaid,
+       COALESCE(o.orderedval,0) -COALESCE(p.totalpaid,0) AS diff
+       FROM Customers c
+  LEFT JOIN value_ordered o ON c.customerNumber = o.customerNumber
+  LEFT JOIN paid p ON c.customerNumber = p.customerNumber
+ORDER BY diff DESC;

@@ -1,6 +1,6 @@
-SELECT o.orderdate
-FROM orderdetails od 
-  JOIN orders o ON od.ordernumber = o.ordernumber
-  JOIN products p ON od.productcode = p.productcode
-WHERE p.productname = '1940 Ford Pickup Truck'
-ORDER BY o.orderdate DESC;
+SELECT c.customerName,
+       p.amount
+FROM customers c
+  JOIN payments p ON p.customerNumber = c.customerNumber
+WHERE p.amount > 100000
+ORDER BY p.amount DESC;

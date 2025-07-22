@@ -1,5 +1,3 @@
-SELECT customernumber,
-       checknumber,
-       amount
-FROM payments
-WHERE amount > 100000;
+SELECT productLine
+FROM productLines
+WHERE productLine LIKE '%Cars%';

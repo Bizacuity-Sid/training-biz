@@ -1,5 +1,7 @@
-SELECT country,
-       COUNT(customernumber) AS count_customer
-FROM customers
-WHERE REGEXP_LIKE (country,'Denmark|Norway|Sweden')
-GROUP BY country;
+SELECT p.quantityInStock,
+       od.quantityOrdered,
+       o.status
+FROM products p
+  JOIN orderdetails od ON od.productCode = p.productCode
+  JOIN orders o ON o.orderNumber = od.orderNumber
+WHERE o.status = 'On Hold';

@@ -1,15 +1,13 @@
-WITH cte1 AS
-(
-  SELECT ordernumber,
-         SUM(quantityordered*priceeach) AS total
-  FROM orderdetails
-  GROUP BY ordernumber
-  HAVING COUNT(ordernumber) > 2
-)
-SELECT c.ordernumber,
-       od.productcode,
-       (od.quantityordered*od.priceeach) AS amount,
-       c.total
-FROM orderdetails od
-  JOIN cte1 c ON od.ordernumber = c.ordernumber
-WHERE (od.quantityordered*od.priceeach) >(c.total / 2)
+WITH instock
+AS
+(SELECT productLine,
+       SUM(quantityInStock) AS totalstock
+FROM products
+GROUP BY productLine)
+SELECT p.productName,
+       p.productLine,
+       (p.quantityInStock / p1.totalstock)*100 AS percentage
+FROM products p
+  JOIN instock p1 ON p.productLine = p1.productLine
+ORDER BY p.productLine,
+         percentage DESC;

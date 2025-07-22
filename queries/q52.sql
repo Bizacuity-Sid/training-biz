@@ -1,7 +1,9 @@
-SELECT e.employeenumber,
-       SUM(od.priceeach*od.quantityordered) AS revenue
-FROM orderdetails od
-  JOIN orders o ON od.ordernumber = o.ordernumber
-  JOIN customers c ON o.customernumber = c.customernumber
-  JOIN employees e ON c.salesrepemployeenumber = e.employeenumber
-GROUP BY e.employeenumber;
+SELECT c.customerNumber,
+       c.customerName,
+       AVG(o.shippedDate - o.orderDate) AS avgdaysToShip
+FROM Customers c
+  JOIN Orders o ON c.customerNumber = o.customerNumber
+WHERE o.shippedDate IS NOT NULL
+GROUP BY c.customerNumber,
+         c.customerName
+ORDER BY avgdaysToShip DESC;

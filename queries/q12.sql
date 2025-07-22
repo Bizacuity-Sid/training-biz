@@ -1,4 +1,7 @@
-SELECT  p.productname
-FROM orderdetails od
-  JOIN products p ON p.productcode = od.productcode
-WHERE od.priceeach <(0.8*p.msrp) group by p.productname;
+SELECT o.orderDate,
+       p.productName
+FROM orders o
+  JOIN orderdetails od ON od.orderNumber = o.orderNumber
+  JOIN products p ON p.productCode = od.productCode
+WHERE p.productName = '1940 Ford Pickup Truck'
+ORDER BY o.orderDate DESC;

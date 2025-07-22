@@ -1,3 +1,3 @@
-SELECT productname
+SELECT productName
 FROM products
-WHERE LOWER(productname) LIKE '%ship';
+WHERE productName LIKE '%Ford%';

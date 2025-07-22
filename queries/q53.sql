@@ -1,8 +1,12 @@
-SELECT c.salesrepemployeenumber,
-       SUM((od.priceeach - p.buyprice)*od.quantityordered) AS profit
-FROM orderdetails od
-  JOIN orders o ON od.ordernumber = o.ordernumber
-  JOIN customers c ON o.customernumber = c.customernumber
-  JOIN products p ON od.productcode = p.productcode
-GROUP BY c.salesrepemployeenumber
-ORDER BY profit desc
+SELECT e.employeeNumber,
+       e.firstName,
+       e.lastName,
+       SUM(od.quantityOrdered*od.priceEach) AS totalRevenue
+FROM Employees e
+  JOIN Customers c ON e.employeeNumber = c.salesRepEmployeeNumber
+  JOIN Orders o ON c.customerNumber = o.customerNumber
+  JOIN OrderDetails od ON o.orderNumber = od.orderNumber
+GROUP BY e.employeeNumber,
+         e.firstName,
+         e.lastName
+ORDER BY totalRevenue;

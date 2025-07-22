@@ -1,3 +1,3 @@
-SELECT customername
-FROM customers
-WHERE REGEXP_LIKE (customername,'[0-9]');
+SELECT productName
+FROM products
+WHERE productCode BETWEEN 'S700_1000' AND 'S700_1499';

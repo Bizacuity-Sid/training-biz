@@ -1,35 +1,29 @@
-WITH total_payments AS
+WITH product2003 AS
 (
-  SELECT customernumber,
-         EXTRACT(YEAR FROM paymentdate) AS payment_year,
-         SUM(amount) AS total_amount
-  FROM payments
-  WHERE EXTRACT(YEAR FROM paymentdate) = 2003
-  OR    EXTRACT(YEAR FROM paymentdate) = 2004
-  GROUP BY customernumber,
-           EXTRACT(YEAR FROM paymentdate)
+  SELECT od.productCode,
+         SUM(od.quantityOrdered*od.priceEach) AS saled2003
+  FROM orderdetails od
+    JOIN orders o ON od.orderNumber = o.orderNumber
+  WHERE EXTRACT(YEAR FROM o.orderDate) = 2003
+  GROUP BY od.productCode
 ),
-payment_2003 AS
+product2004 AS
 (
-  SELECT customernumber,
-         payment_year,
-         total_amount
-  FROM total_payments
-  WHERE payment_year = 2003
-),
-payment_2004 AS
-(
-  SELECT customernumber,
-         payment_year,
-         total_amount
-  FROM total_payments
-  WHERE payment_year = 2004
+  SELECT od.productCode,
+         SUM(od.quantityOrdered*od.priceEach) AS saled2004
+  FROM orderdetails od
+    JOIN orders o ON od.orderNumber = o.orderNumber
+  WHERE EXTRACT(YEAR FROM o.orderDate) = 2004
+  GROUP BY od.productCode
 )
-SELECT c.customernumber,
-       nvl(p1.total_amount,0) as amount2003,
-       nvl(p2.total_amount,0) as amount2004,
-       nvl((p1.total_amount/p2.total_amount),0) as ratio 
-FROM customers c
-  left  JOIN payment_2003 p1 ON c.customernumber = p1.customernumber
-  left JOIN payment_2004 p2 ON c.customernumber = p2.customernumber 
-order by c.customernumber
+SELECT p.productCode,
+       COALESCE(c1.saled2003,0) AS saled2003,
+       COALESCE(c2.saled2004,0) AS saled2004,
+       CASE
+         WHEN c2.saled2004 IS NULL OR c2.saled2004 = 0 THEN COALESCE(c1.saled2003 / c2.saled2004,0)
+         ELSE c1.saled2003 / c2.saled2004
+       END AS ratio
+FROM products p
+  LEFT JOIN product2003 c1 ON p.productCode = c1.productCode
+  LEFT JOIN product2004 c2 ON c1.productCode = c2.productCode
+ORDER BY ratio DESC;

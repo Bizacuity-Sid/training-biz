@@ -1,4 +1,3 @@
-SELECT employeenumber,
-       concat(firstname,lastname) AS Employee
-FROM employees
-WHERE reportsto IS NULL;
+SELECT productVendor
+FROM products
+WHERE productVendor LIKE '%Diecast';

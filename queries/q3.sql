@@ -1,6 +1,4 @@
-SELECT o.orderdate,
-       p.productname
-FROM orderdetails od
-  JOIN orders ON od.ordernumber = o.ordernumber
-  JOIN products p ON od.productcode = p.productcode
-ORDER BY o.orderdate;
+SELECT c.customerName,
+       concat(e.firstName,e.lastName) AS accountRep
+FROM customers c
+  JOIN employees e ON c.salesRepEmployeeNumber = e.employeeNumber;

@@ -1,4 +1,4 @@
-SELECT productcode,
-       productname
+SELECT productName
 FROM products
-WHERE productcode LIKE 'S700%';
+WHERE productName LIKE '%Ship%'
+OR    productName LIKE '%Boat%';

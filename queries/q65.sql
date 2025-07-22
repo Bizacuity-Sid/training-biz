@@ -1,19 +1,17 @@
-WITH cte1 AS
-(
-  SELECT EXTRACT(MONTH FROM paymentdate) AS MONTH,
-         EXTRACT(YEAR FROM paymentdate) AS YEAR,
-         AVG(amount) AS average
-  FROM payments
-  GROUP BY EXTRACT(MONTH FROM paymentdate),
-           EXTRACT(YEAR FROM paymentdate)
-)
-SELECT p.checknumber,
-       p.amount,
-       c1.Month,
-       c1.Year,
-       c1.average
-FROM payments p
-  JOIN cte1 c1 ON EXTRACT (MONTH FROM p.paymentdate) = c1.Month
-WHERE p.amount > 2*c1.average
-AND   EXTRACT(YEAR FROM p.paymentdate) = c1.Year
-ORDER BY p.paymentdate;
+WITH each_profit
+AS
+(SELECT o.customerNumber,
+       SUM((od.priceEach - p.buyPrice)*od.quantityOrdered) AS profit
+FROM products p
+  JOIN orderdetails od ON p.productCode = od.productCode
+  JOIN orders o ON od.orderNumber = o.orderNumber
+GROUP BY o.customerNumber),
+         total_profit AS (SELECT SUM(profit) AS total FROM each_profit)
+SELECT c.customerNumber,
+       c.customerName,
+       COALESCE(c1.profit,0) AS profit,
+       COALESCE((c1.profit / c2.total)*100,0) AS percentage
+FROM total_profit c2,
+     customers c
+  LEFT JOIN each_profit c1 ON c.customerNumber = c1.customerNumber
+ORDER BY percentage DESC;

@@ -1,21 +1,19 @@
-WITH total_revenue AS
+WITH inventoryVal AS
 (
-  SELECT SUM(quantityordered*priceeach) AS revenue
-  FROM orderdetails
+  SELECT productCode,
+         productName,
+         quantityInStock*buyPrice AS inventory_value
+  FROM Products
 ),
-customer_revenue AS
+totalValue AS
 (
-  SELECT o.customernumber,
-         SUM(od.quantityordered*od.priceeach) AS revenue_value
-  FROM orderdetails od
-    JOIN orders o ON od.ordernumber = o.ordernumber
-  GROUP BY o.customernumber
+  SELECT SUM(inventory_value) AS total_inventory_value
+  FROM inventoryVal
 )
-SELECT c.customernumber,
-       c.customername,
-       COALESCE(cr.revenue_value,0) AS c_revenue,
-       ROUND((COALESCE(cr.revenue_value,0) / tr.revenue)*100,2) AS revenue_percentage
-FROM customers c
-  CROSS JOIN total_revenue tr
-  LEFT JOIN customer_revenue cr ON c.customernumber = cr.customernumber
-ORDER BY c.customername;
+SELECT c1.productCode,
+       c1.productName,
+       c1.inventory_value,
+       (c1.inventory_value / c2.total_inventory_value)*100 AS percentage
+FROM inventoryVal c1,
+     totalValue c2
+ORDER BY percentage DESC;

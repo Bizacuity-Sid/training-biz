@@ -1,23 +1,24 @@
-WITH total_amount_2003 AS
+(i.e., divide the value of payments made by the orders received)?* 
+WITH value_ordered AS
 (
-  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment_2003,
-         SUM(amount) AS tot_amount_2003
-  FROM payments
-  WHERE EXTRACT(YEAR FROM paymentdate) = 2003
-  GROUP BY EXTRACT(MONTH FROM paymentdate)
+  SELECT EXTRACT(MONTH FROM o.orderDate) AS MONTH,
+         SUM(od.quantityOrdered*od.priceEach) AS orderedval
+  FROM orders o
+    JOIN orderdetails od ON od.orderNumber = o.orderNumber
+  WHERE EXTRACT(YEAR FROM o.orderDate) = 2004
+  GROUP BY EXTRACT(MONTH FROM o.orderDate)
+  ORDER BY MONTH
 ),
-total_amount_2004 AS
+paid AS
 (
-  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment_2004,
-         SUM(amount) AS tot_amount_2004
-  FROM payments
-  WHERE EXTRACT(YEAR FROM paymentdate) = 2004
-  GROUP BY EXTRACT(MONTH FROM paymentdate)
+  SELECT EXTRACT(MONTH FROM p.paymentDate) AS MONTH,
+         SUM(p.amount) AS totalpaid
+  FROM payments p
+  WHERE EXTRACT(YEAR FROM p.paymentDate) = 2004
+  GROUP BY EXTRACT(MONTH FROM p.paymentDate)
+  ORDER BY MONTH
 )
-SELECT t1.Month_payment_2004 AS Months,
-       t1.tot_amount_2004,
-       t2.tot_amount_2003,
-       (t1.tot_amount_2004 - t2.tot_amount_2003) AS Difference
-FROM total_amount_2004 t1
-  JOIN total_amount_2003 t2 ON t1.Month_payment_2004 = t2.Month_payment_2003
-ORDER BY t1.Month_payment_2004
+SELECT ct1.month,
+       (ct2.totalpaid / ct1.orderedval) AS ratio
+FROM paid ct2
+  JOIN value_ordered ct1 ON ct1.month = ct2.month;

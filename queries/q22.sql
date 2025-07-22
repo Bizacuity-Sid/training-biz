@@ -1,3 +1,6 @@
-SELECT concat(firstname,concat(' ',lastname)) as EmployeeName 
+SELECT concat(firstName,lastName) AS fullname
 FROM employees
-WHERE REGEXP_LIKE (concat(firstname,lastname),'[^a-zA-Z]');
+WHERE firstName LIKE '%Larry%'
+OR    firstName LIKE '%Barry%'
+OR    lastName LIKE '%Larry%'
+OR    lastName LIKE '%Barry%';

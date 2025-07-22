@@ -1,4 +1,6 @@
-SELECT productname
-FROM products
-WHERE lower(productname) LIKE '%ship%'
-OR    lower(productname) LIKE '%boat%';
+SELECT concat(firstName,lastName) AS fullName
+FROM employees
+WHERE firstName LIKE '%Dianne%'
+OR    lastName LIKE '%Diane%'
+OR    firstName LIKE '%Diane%'
+OR    lastName LIKE '%Dianne%';

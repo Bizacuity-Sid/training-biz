@@ -1,4 +1,6 @@
-SELECT customername,
-       city
-FROM customers
-WHERE salesrepemployeenumber IS NULL;
+SELECT concat(firstName,lastName) AS fullname,
+       jobTitle
+FROM employees
+WHERE jobTitle LIKE '%VP%'
+OR    jobTitle LIKE '%Manager%'
+ORDER BY jobTitle;

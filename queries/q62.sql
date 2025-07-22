@@ -1,11 +1,10 @@
-WITH inventory AS
+WITH avg_amt AS
 (
-  SELECT SUM(quantityinstock*buyprice) AS total_inventory
-  FROM products
+  SELECT AVG(amount) AS avg_pay FROM payments
 )
-SELECT p.productcode,
-       (p.quantityinstock*p.buyprice) AS inventory_value,
-       ROUND((p.quantityinstock*p.buyprice) / i.total_inventory*100,2) AS inventory_percentage
-FROM products p
-  CROSS JOIN inventory i
-ORDER BY inventory_percentage DESC;
+SELECT p.customerNumber,
+       p.amount
+FROM payments p
+  CROSS JOIN avg_amt c1
+WHERE p.amount > 2*c1.avg_pay
+order by p.amount;

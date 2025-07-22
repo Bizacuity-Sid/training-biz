@@ -1,15 +1,15 @@
-WITH cte1 AS
-(
-  SELECT productline,
-         SUM(quantityinstock) AS productline_stock
-  FROM products
-  GROUP BY productline
-)
-SELECT p.productcode,
-       p.productline,
-       p.quantityinstock,
-       ROUND(p.quantityinstock / c.productline_stock*100,2) AS percentage
-FROM products p
-  JOIN cte1 c ON p.productline = c.productline
-ORDER BY p.productline,
-         percentage DESC
+WITH avg_pay
+AS
+(SELECT EXTRACT(year FROM paymentDate) AS year,
+       EXTRACT(month FROM paymentDate) AS month,
+       AVG(amount) AS average
+FROM payments
+GROUP BY EXTRACT(year FROM paymentDate),
+         EXTRACT(month FROM paymentDate)
+ORDER BY year,
+         month) SELECT p.checkNumber,
+         p.paymentDate,
+         p.amount FROM payments p 
+         JOIN avg_pay p1 ON p1.year = EXTRACT(year FROM p.paymentDate) AND p1.month = EXTRACT(month FROM p.paymentDate) 
+         WHERE p.amount > 2*p1.average 
+         ORDER BY p.paymentDate;

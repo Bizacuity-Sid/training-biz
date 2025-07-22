@@ -1,4 +1,3 @@
-SELECT productname,
-       productcode
+SELECT productName
 FROM products
-WHERE productcode BETWEEN 'S700_1000' AND 'S700_1499';
+WHERE productName LIKE '%Ship';
