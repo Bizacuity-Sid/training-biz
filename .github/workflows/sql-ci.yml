@@ -34,10 +34,10 @@ jobs:
           echo "🔄 Processing $base..."
 
           echo "▶️ Running student query..."
-          python oracle_runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"
+          python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"
 
           echo "▶️ Running solution query..."
-          python oracle_runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"
+          python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"
 
           echo "🔍 Comparing outputs..."
           if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
