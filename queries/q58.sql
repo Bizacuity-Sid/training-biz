@@ -1,4 +1,3 @@
-(i.e., divide the value of payments made by the orders received)?* 
 WITH value_ordered AS
 (
   SELECT EXTRACT(MONTH FROM o.orderDate) AS MONTH,

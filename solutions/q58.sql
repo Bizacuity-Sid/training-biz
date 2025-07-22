@@ -12,7 +12,6 @@ FROM orderdetails od inner join orders o on od.ordernumber=o.ordernumber
 WHERE extract(YEAR from o.orderdate)=2004
 GROUP BY extract(MONTH from o.orderdate)
 )
-
 SELECT orders_per_month.m,
        sum(payments_per_month.totalpaid) as paid_amt,
        sum(orders_per_month.totalvalue)as order_amt,

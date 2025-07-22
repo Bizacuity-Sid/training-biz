@@ -24,59 +24,70 @@ jobs:
     - name: 📦 Install dependencies
       run: pip install oracledb
 
-    - name: 🧪 Run tests and SQL guideline checks
-      shell: bash
+    - name: 🧪 Run SQL tests and checks
       run: |
-        mkdir -p results
-        mkdir -p reports
-        echo "🔎 Oracle SQL Validation Report" > reports/report.txt
-        echo "Generated: $(date)" >> reports/report.txt
-        echo "" >> reports/report.txt
+        mkdir -p results reports
+        report_file="reports/report.txt"
+        echo "🔎 Oracle SQL Validation Report" > "$report_file"
+        echo "Generated: $(date)" >> "$report_file"
+        echo "" >> "$report_file"
 
         failed=0
 
         for file in queries/*.sql; do
           base=$(basename "$file" .sql)
-          echo "🔄 Processing $base..."
+          echo "::group::🔍 Validating $base.sql"
 
-          echo "▶️ Running student query..."
-          if ! python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"; then
-            echo "❌ Error executing student query: $base.sql" >> reports/report.txt
+          user_output="results/${base}_user.out"
+          solution_output="results/${base}_solution.out"
+
+          echo "▶️ Running student query: $file"
+          if ! python oracle-runner.py "$file" "$user_output" "$ORACLE_CONN_STR"; then
+            echo "❌ Error executing student query: $base.sql" >> "$report_file"
             failed=1
+            echo "::endgroup::"
             continue
           fi
 
-          echo "▶️ Running solution query..."
-          if ! python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"; then
-            echo "❌ Error executing solution query: $base.sql" >> reports/report.txt
+          solution_file="solutions/$base.sql"
+          echo "▶️ Running solution query: $solution_file"
+          if ! python oracle-runner.py "$solution_file" "$solution_output" "$ORACLE_CONN_STR"; then
+            echo "❌ Error executing solution query: $base.sql" >> "$report_file"
             failed=1
+            echo "::endgroup::"
             continue
           fi
 
           echo "🔍 Comparing outputs..."
-          if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
-            echo "✅ Output match for $base" >> reports/report.txt
+          if diff -q "$user_output" "$solution_output" > /dev/null; then
+            echo "✅ Output match for $base" >> "$report_file"
           else
-            echo "❌ Output mismatch for $base" >> reports/report.txt
-            echo "---- Diff ----" >> reports/report.txt
-            diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt || true
-            echo "--------------" >> reports/report.txt
+            echo "❌ Output mismatch for $base" >> "$report_file"
+            echo "---- Diff ----" >> "$report_file"
+            diff "$user_output" "$solution_output" >> "$report_file" || true
+            echo "--------------" >> "$report_file"
             failed=1
           fi
 
-          echo "🧪 Running SQL guideline checker..."
-          echo "📝 Guidelines for $base.sql:" >> reports/report.txt
-          python sql_guideline_checker.py "queries/$base.sql" >> reports/report.txt
-          echo "" >> reports/report.txt
+          echo "🧪 Checking SQL guidelines..."
+          echo "📝 Guidelines for $base.sql:" >> "$report_file"
+          python sql_guideline_checker.py "$file" >> "$report_file"
+          echo "" >> "$report_file"
+
+          echo "::endgroup::"
         done
 
-        echo "📄 Validation complete. See report.txt for details."
-
-        # Final exit based on whether any test failed
+        echo "📄 Validation complete. See full report in report.txt"
         exit $failed
 
-    - name: 📤 Upload full report
+    - name: 📤 Upload validation report
       uses: actions/upload-artifact@v4
       with:
         name: sql-validation-report
         path: reports/report.txt
+
+    - name: 📤 Upload individual query results
+      uses: actions/upload-artifact@v4
+      with:
+        name: sql-validation-results
+        path: results/

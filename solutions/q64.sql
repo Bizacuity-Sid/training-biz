@@ -1,4 +1,4 @@
-total_rev as
+with total_rev as
 (
   select sum(quantityordered*priceeach) as total_revenue
   from orderdetails
