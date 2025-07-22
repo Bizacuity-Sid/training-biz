@@ -3,7 +3,7 @@ name: Oracle SQL Validation
 on:
   push:
     branches:
-        -  main #main
+      - main
 
 jobs:
   validate-sql:
@@ -13,7 +13,7 @@ jobs:
       ORACLE_CONN_STR: ${{ secrets.ORACLE_CONN_STR }}
 
     steps:
-    - name: 🛎 Checkout repository
+    - name: 🛎️ Checkout repository
       uses: actions/checkout@v3
 
     - name: 🔧 Set up Python
@@ -25,19 +25,33 @@ jobs:
       run: pip install oracledb
 
     - name: 🧪 Run tests and SQL guideline checks
+      shell: bash
       run: |
         mkdir -p results
         mkdir -p reports
+        echo "🔎 Oracle SQL Validation Report" > reports/report.txt
+        echo "Generated: $(date)" >> reports/report.txt
+        echo "" >> reports/report.txt
+
+        failed=0
 
         for file in queries/*.sql; do
           base=$(basename "$file" .sql)
           echo "🔄 Processing $base..."
 
           echo "▶️ Running student query..."
-          python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"
+          if ! python oracle-runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"; then
+            echo "❌ Error executing student query: $base.sql" >> reports/report.txt
+            failed=1
+            continue
+          fi
 
           echo "▶️ Running solution query..."
-          python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"
+          if ! python oracle-runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"; then
+            echo "❌ Error executing solution query: $base.sql" >> reports/report.txt
+            failed=1
+            continue
+          fi
 
           echo "🔍 Comparing outputs..."
           if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
@@ -45,8 +59,9 @@ jobs:
           else
             echo "❌ Output mismatch for $base" >> reports/report.txt
             echo "---- Diff ----" >> reports/report.txt
-            diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt
+            diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt || true
             echo "--------------" >> reports/report.txt
+            failed=1
           fi
 
           echo "🧪 Running SQL guideline checker..."
@@ -54,6 +69,11 @@ jobs:
           python sql_guideline_checker.py "queries/$base.sql" >> reports/report.txt
           echo "" >> reports/report.txt
         done
+
+        echo "📄 Validation complete. See report.txt for details."
+
+        # Final exit based on whether any test failed
+        exit $failed
 
     - name: 📤 Upload full report
       uses: actions/upload-artifact@v4
