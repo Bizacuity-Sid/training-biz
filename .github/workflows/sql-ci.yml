@@ -2,8 +2,7 @@ name: Oracle SQL Validation
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   validate-sql:
@@ -13,81 +12,84 @@ jobs:
       ORACLE_CONN_STR: ${{ secrets.ORACLE_CONN_STR }}
 
     steps:
-    - name: 🛎️ Checkout repository
-      uses: actions/checkout@v3
+      - name: 🛎️ Checkout repository
+        uses: actions/checkout@v3
 
-    - name: 🔧 Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: 🔧 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: 📦 Install dependencies
-      run: pip install oracledb
+      - name: 📦 Install dependencies
+        run: pip install oracledb
 
-    - name: 🧪 Run SQL tests and checks
-      run: |
-        mkdir -p results reports
-        report_file="reports/report.txt"
-        echo "🔎 Oracle SQL Validation Report" > "$report_file"
-        echo "Generated: $(date)" >> "$report_file"
-        echo "" >> "$report_file"
-
-        failed=0
-
-        for file in queries/*.sql; do
-          base=$(basename "$file" .sql)
-          echo "::group::🔍 Validating $base.sql"
-
-          user_output="results/${base}_user.out"
-          solution_output="results/${base}_solution.out"
-
-          echo "▶️ Running student query: $file"
-          if ! python oracle-runner.py "$file" "$user_output" "$ORACLE_CONN_STR"; then
-            echo "❌ Error executing student query: $base.sql" >> "$report_file"
-            failed=1
-            echo "::endgroup::"
-            continue
-          fi
-
-          solution_file="solutions/$base.sql"
-          echo "▶️ Running solution query: $solution_file"
-          if ! python oracle-runner.py "$solution_file" "$solution_output" "$ORACLE_CONN_STR"; then
-            echo "❌ Error executing solution query: $base.sql" >> "$report_file"
-            failed=1
-            echo "::endgroup::"
-            continue
-          fi
-
-          echo "🔍 Comparing outputs..."
-          if diff -q "$user_output" "$solution_output" > /dev/null; then
-            echo "✅ Output match for $base" >> "$report_file"
-          else
-            echo "❌ Output mismatch for $base" >> "$report_file"
-            echo "---- Diff ----" >> "$report_file"
-            diff "$user_output" "$solution_output" >> "$report_file" || true
-            echo "--------------" >> "$report_file"
-            failed=1
-          fi
-
-          echo "🧪 Checking SQL guidelines..."
-          echo "📝 Guidelines for $base.sql:" >> "$report_file"
-          python sql_guideline_checker.py "$file" >> "$report_file"
+      - name: 🧪 Run SQL tests and checks
+        id: run-tests
+        run: |
+          mkdir -p results reports
+          report_file="reports/report.txt"
+          echo "🔎 Oracle SQL Validation Report" > "$report_file"
+          echo "Generated: $(date)" >> "$report_file"
           echo "" >> "$report_file"
 
-          echo "::endgroup::"
-        done
+          failed=0
 
-        echo "📄 Validation complete. See full report in report.txt"
-        exit $failed
+          for file in queries/*.sql; do
+            base=$(basename "$file" .sql)
+            echo "::group::🔍 Validating $base.sql"
 
-    - name: 📤 Upload validation report
-      uses: actions/upload-artifact@v4
-      with:
-        name: sql-validation-report
-        path: reports/report.txt
+            user_output="results/${base}_user.out"
+            solution_output="results/${base}_solution.out"
 
-    - name: 📤 Upload individual query results
-      uses: actions/upload-artifact@v4
-      with:
-        name: sql-validation-results
-        path: results/
+            echo "▶️ Running student query: $file"
+            if ! python oracle-runner.py "$file" "$user_output" "$ORACLE_CONN_STR"; then
+              echo "❌ Error executing student query: $base.sql" >> "$report_file"
+              failed=1
+              echo "::endgroup::"
+              continue
+            fi
+
+            solution_file="solutions/$base.sql"
+            echo "▶️ Running solution query: $solution_file"
+            if ! python oracle-runner.py "$solution_file" "$solution_output" "$ORACLE_CONN_STR"; then
+              echo "❌ Error executing solution query: $base.sql" >> "$report_file"
+              failed=1
+              echo "::endgroup::"
+              continue
+            fi
+
+            echo "🔍 Comparing outputs..."
+            if diff -q "$user_output" "$solution_output" > /dev/null; then
+              echo "✅ Output match for $base" >> "$report_file"
+            else
+              echo "❌ Output mismatch for $base" >> "$report_file"
+              echo "---- Diff ----" >> "$report_file"
+              diff "$user_output" "$solution_output" >> "$report_file" || true
+              echo "--------------" >> "$report_file"
+              failed=1
+            fi
+
+            echo "🧪 Checking SQL guidelines..."
+            echo "📝 Guidelines for $base.sql:" >> "$report_file"
+            python sql_guideline_checker.py "$file" >> "$report_file"
+            echo "" >> "$report_file"
+
+            echo "::endgroup::"
+          done
+
+          echo "📄 Validation complete. See full report in report.txt"
+          exit $failed
+
+      - name: 📤 Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-validation-report
+          path: reports/report.txt
+
+      - name: 📤 Upload query outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-validation-results
+          path: results/
