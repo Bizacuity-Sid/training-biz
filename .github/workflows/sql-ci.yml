@@ -1,0 +1,66 @@
+name: Oracle SQL Validation
+
+on:
+  push:
+    paths:
+      - 'queries/**'
+      - 'solutions/**'
+      - 'sql_guideline_checker.py'
+      - 'oracle_runner.py'
+      - '.github/workflows/sql_ci.yml'
+
+jobs:
+  validate-sql:
+    runs-on: ubuntu-latest
+
+    env:
+      ORACLE_CONN_STR: ${{ secrets.ORACLE_CONN_STR }}
+
+    steps:
+    - name: 🛎 Checkout repository
+      uses: actions/checkout@v3
+
+    - name: 🔧 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 📦 Install dependencies
+      run: pip install cx_Oracle
+
+    - name: 🧪 Run tests and SQL guideline checks
+      run: |
+        mkdir -p results
+        mkdir -p reports
+
+        for file in queries/*.sql; do
+          base=$(basename "$file" .sql)
+          echo "🔄 Processing $base..."
+
+          echo "▶️ Running student query..."
+          python oracle_runner.py "queries/$base.sql" "results/${base}_user.out" "$ORACLE_CONN_STR"
+
+          echo "▶️ Running solution query..."
+          python oracle_runner.py "solutions/$base.sql" "results/${base}_solution.out" "$ORACLE_CONN_STR"
+
+          echo "🔍 Comparing outputs..."
+          if diff -q "results/${base}_user.out" "results/${base}_solution.out" > /dev/null; then
+            echo "✅ Output match for $base" >> reports/report.txt
+          else
+            echo "❌ Output mismatch for $base" >> reports/report.txt
+            echo "---- Diff ----" >> reports/report.txt
+            diff "results/${base}_user.out" "results/${base}_solution.out" >> reports/report.txt
+            echo "--------------" >> reports/report.txt
+          fi
+
+          echo "🧪 Running SQL guideline checker..."
+          echo "📝 Guidelines for $base.sql:" >> reports/report.txt
+          python sql_guideline_checker.py "queries/$base.sql" >> reports/report.txt
+          echo "" >> reports/report.txt
+        done
+
+    - name: 📤 Upload full report
+      uses: actions/upload-artifact@v3
+      with:
+        name: sql-validation-report
+        path: reports/report.txt

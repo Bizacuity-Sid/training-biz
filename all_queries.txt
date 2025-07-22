@@ -1,0 +1,997 @@
+1.Prepare a list of offices sorted by country, state, city.
+
+SELECT officecode,
+       city,
+       state,
+       country
+FROM offices
+ORDER BY country,
+         state,
+         city;
+
+
+
+2.List the products in each product line
+
+SELECT productname,
+       productline
+FROM products
+ORDER BY productline;
+
+
+
+
+
+
+
+
+
+
+3. Report the account representative for each customer.
+
+SELECT c.customername,
+       concat(e.firstname,e.lastname) AS accountRepresentative
+FROM Customers c
+  LEFT JOIN Employees e ON c.salesrepemployeenumber = e.employeenumber;
+
+
+4. List products sold by order date.
+
+SELECT o.orderdate,
+       p.productname
+FROM orderdetails od
+  JOIN orders ON od.ordernumber = o.ordernumber
+  JOIN products p ON od.productcode = p.productcode
+ORDER BY o.orderdate;
+
+
+
+
+
+
+
+
+
+5. List the product lines that contain 'Cars'.
+
+SELECT productline
+FROM productlines
+WHERE LOWER(productline) LIKE '%cars%';
+
+
+
+
+6. Report those payments greater than $100,000.
+
+SELECT customernumber,
+       checknumber,
+       amount
+FROM payments
+WHERE amount > 100000;
+
+
+
+
+7. What are the names of executives with VP or Manager in their title? Use the CONCAT function to combine the employee's first name and last name into a single field for reporting.
+
+SELECT concat(firstname,lastname) AS Employee,jobtitle
+FROM Employees
+WHERE jobtitle LIKE '%VP%'
+OR    jobtitle LIKE '%Manager%';
+
+
+
+8. Report the name and city of customers who don't have sales representatives?
+
+SELECT customername,
+       city
+FROM customers
+WHERE salesrepemployeenumber IS NULL;
+
+
+
+
+
+
+9. Report the products that have not been sold.
+
+WITH soldProducts AS
+(
+  SELECT DISTINCT od.productcode
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  WHERE o.status != 'Cancelled'
+)
+SELECT p.productcode,
+       p.productname
+FROM products p
+  LEFT JOIN soldProducts sp ON p.productcode = sp.productcode
+WHERE sp.productcode IS NULL;
+
+
+
+
+10. Who are the employees in Boston?
+
+SELECT concat(e.firstname,e.lastname) AS Employee
+FROM Employees e
+  JOIN Offices o ON e.officecode = o.officecode
+WHERE LOWER(o.city) = 'boston';
+
+
+
+
+
+11. Report those payments greater than $100,000. Sort the report so the customer who made the highest payment appears first
+
+SELECT c.customername,
+       p.amount
+FROM payments p
+  JOIN customers c ON p.customernumber = c.customernumber
+WHERE p.amount > 100000
+ORDER BY p.amount DESC;
+
+
+
+
+12. List the order dates in descending order for orders for the 1940 Ford Pickup Truck.
+
+SELECT o.orderdate
+FROM orderdetails od 
+  JOIN orders o ON od.ordernumber = o.ordernumber
+  JOIN products p ON od.productcode = p.productcode
+WHERE p.productname = '1940 Ford Pickup Truck'
+ORDER BY o.orderdate DESC;
+
+
+
+13. List the names of products sold at less than 80% of the MSRP.
+
+SELECT  p.productname
+FROM orderdetails od
+  JOIN products p ON p.productcode = od.productcode
+WHERE od.priceeach <(0.8*p.msrp) group by p.productname;
+
+
+
+
+14. Reports those products that have been sold with a markup of 100% or more (i.e., the priceEach is at least twice the buyPrice) 7. List the products ordered on a Monday.
+
+SELECT p.productname,
+       c.day_of_the_week
+FROM calendar c
+  JOIN orders o ON c.calendar_date = o.orderdate
+  JOIN orderdetails od ON o.ordernumber = od.ordernumber
+  JOIN products p ON od.productcode = p.productcode
+WHERE od.priceeach >= (2*p.buyprice)
+AND   c.day_of_the_week like '%Monday%' group by p.productname, c.day_of_the_week ;
+
+
+
+
+
+
+SELECT p.productname,
+       TO_CHAR(o.orderdate,'Day') AS Day
+FROM orderdetails od
+  JOIN orders o ON o.ordernumber = od.ordernumber
+  JOIN products p ON od.productcode = p.productcode
+WHERE od.priceeach >= (2*p.buyprice)
+AND   LOWER(TO_CHAR(o.orderdate,'Day')) LIKE '%monday%'
+GROUP BY p.productname,
+         TO_CHAR(o.orderdate,'Day');
+
+
+
+15. Find products containing the name 'Ford'.
+
+SELECT productname
+FROM products
+WHERE LOWER(productname) LIKE '%ford%';
+
+
+
+16. List products ending in 'ship'.
+
+SELECT productname
+FROM products
+WHERE LOWER(productname) LIKE '%ship';
+
+
+
+17. What are the products with a product code in the range S700_1000 to S700_1499?
+
+SELECT productname,
+       productcode
+FROM products
+WHERE productcode BETWEEN 'S700_1000' AND 'S700_1499';
+
+
+
+18. Which customers have a digit in their name?
+
+SELECT customername
+FROM customers
+WHERE REGEXP_LIKE (customername,'[0-9]');
+
+
+
+19. List the names of employees called Dianne or Diane.
+
+SELECT concat(firstname,lastname) AS Employee
+FROM Employees
+WHERE lower(firstname) LIKE '%dianne%'
+OR    lower(firstname) LIKE '%diane%'
+OR    lower(lastname) LIKE '%dianne%'
+OR    lower(lastname) LIKE '%diane%';
+
+
+
+
+
+
+20. List the products containing ship or boat in their product name.
+
+SELECT productname
+FROM products
+WHERE lower(productname) LIKE '%ship%'
+OR    lower(productname) LIKE '%boat%';
+
+
+
+21. List the products with a product code beginning with S700.
+
+SELECT productcode,
+       productname
+FROM products
+WHERE productcode LIKE 'S700%';
+
+
+
+22. List the names of employees called Larry or Barry.
+
+SELECT concat(firstname,concat (' ',lastname)) as Employee
+FROM Employees
+WHERE lower(firstname) LIKE 'larry'
+OR    lower(firstname) LIKE 'barry'
+OR lower(lastname) LIKE 'larry'
+OR    lower(lastname) LIKE 'barry';
+
+
+
+23. List the names of employees with non-alphabetic characters in their names.
+
+SELECT concat(firstname,concat(' ',lastname)) as EmployeeName 
+FROM employees
+WHERE REGEXP_LIKE (concat(firstname,lastname),'[^a-zA-Z]');
+
+
+
+24. List the vendors whose name ends in Diecast
+
+SELECT productvendor
+FROM products
+WHERE productvendor LIKE '%Diecast'
+GROUP BY productvendor;
+
+
+
+25.  Who is at the top of the organization (i.e., reports to no one).
+
+SELECT employeenumber,
+       concat(firstname,lastname) AS Employee
+FROM employees
+WHERE reportsto IS NULL;
+
+
+
+
+26. Who reports to William Patterson?
+
+SELECT concat(e1.firstname,concat(' ',e1.lastname)) AS Employee
+FROM employees e1
+  JOIN employees e2 ON e1.reportsto = e2.employeenumber
+WHERE concat(e2.firstname,concat(' ',e2.lastname)) = 'William Patterson';
+
+
+
+27. List all the products purchased by Herkku Gifts.
+
+SELECT p.productname
+FROM customers c
+  JOIN orders o ON c.customernumber = o.customernumber
+  JOIN orderdetails od ON o.ordernumber = od.ordernumber
+  JOIN products p ON od.productcode = p.productcode
+WHERE c.customername = 'Herkku Gifts';
+
+
+
+WITH cte1 AS
+(
+  SELECT customernumber
+  FROM customers
+  WHERE LOWER(customername) = 'herkku gifts'
+),
+cte2 AS
+(
+  SELECT o.ordernumber
+  FROM orders o
+    JOIN cte1 c1 ON o.customernumber = c1.customernumber
+),
+cte3 AS
+(
+  SELECT od.productcode
+  FROM orderdetails od
+    JOIN cte2 c2 ON od.ordernumber = c2.ordernumber
+  GROUP BY od.productcode
+)
+SELECT p.productcode,
+       p.productname
+FROM products p
+  JOIN cte3 c3 ON p.productcode = c3.productcode
+
+
+
+
+28. List the employees who report to those employees who report to Diane Murphy. Use the CONCAT function to combine the employee's first name and last name into a single field for reporting.
+
+SELECT concat(e1.firstname,e1.lastname) AS fullname,
+       concat(e2.firstname,e2.lastname) AS reportingPerson,
+       e3.firstname AS President
+FROM employees e1
+  JOIN employees e2 ON e1.reportsto = e2.employeenumber
+  JOIN employees e3 ON e2.reportsto = e3.employeenumber
+WHERE concat(e3.firstname,concat(' ',e3.lastname)) = 'Diane Murphy';
+
+
+
+
+
+29. Find the products sold in May 2003 but not in May 2004.
+
+WITH cte1 AS
+(
+  SELECT od.productcode,o.orderdate
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  WHERE (EXTRACT(YEAR FROM o.orderdate) = 2003
+  OR    EXTRACT(YEAR FROM o.orderdate) = 2004)
+  AND   EXTRACT(MONTH FROM o.orderdate) =05
+),
+may_03 AS
+(
+  SELECT productcode
+  FROM cte1
+  WHERE EXTRACT(YEAR FROM orderdate) = 2003
+),
+may_04 AS
+(
+  SELECT productcode
+  FROM cte1
+  WHERE EXTRACT(YEAR FROM orderdate) = 2004
+)
+SELECT m3.productcode
+FROM may_03 m3
+LEFT JOIN may_04 m4 ON m3.productcode = m4.productcode
+WHERE m4.productcode IS NULL;
+ 
+
+SELECT od.productcode
+FROM orderdetails od
+  JOIN orders o ON od.ordernumber = o.ordernumber
+WHERE (EXTRACT(YEAR FROM o.orderdate) = 2003 OR EXTRACT(YEAR FROM o.orderdate) = 2004)
+AND   EXTRACT(MONTH FROM o.orderdate) = 05
+GROUP BY od.productcode
+HAVING MAX(EXTRACT(YEAR FROM o.orderdate)) = 2003
+
+30. Find the customers without payments in 2003.
+
+WITH payment_2003 AS
+(
+  SELECT DISTINCT customernumber
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = '2003'
+)
+SELECT c.customername
+FROM payment_2003 p
+  RIGHT JOIN customers c ON p.customernumber = c.customernumber
+WHERE p.customernumber IS NULL;
+
+
+
+
+31. Who reports to Mary Patterson?
+
+SELECT concat(e1.firstname,concat (' ',e1.lastname)) AS EmployeeName
+FROM employees e1
+  JOIN employees e2 ON e1.reportsto = e2.employeenumber
+WHERE concat(e2.firstname,concat(' ',e2.lastname)) = 'Mary Patterson';
+
+
+
+32. How many employees are there in the company?
+
+SELECT COUNT(employeenumber) AS TotalEmployees
+FROM employees;
+
+
+
+
+
+
+33. What is the total of payments received?
+
+SELECT SUM(amount) AS Total_Payment
+FROM payments;
+
+
+
+34. Report total payments for October 28, 2004.
+
+SELECT COUNT(amount) AS total_payments
+FROM payments
+WHERE paymentdate = TO_DATE('2004-10-28','YYYY-MM-DD');
+
+
+
+35. How many products in each product line?
+
+SELECT productline,
+       COUNT(productcode) AS total_products
+FROM products
+GROUP BY productline;
+
+
+
+
+
+36. What is the minimum payment received?
+
+SELECT MIN(amount) AS Min_Payment
+FROM payments;
+
+
+
+37. What is the average percentage markup of the MSRP on buyPrice?
+
+SELECT AVG((msrp - buyprice) / buyprice*100) AS Markup_percentage
+FROM products;
+
+
+
+38. How many distinct products does ClassicModels sell?
+
+
+SELECT COUNT(productcode) AS Distinct_products
+FROM products;
+
+
+
+39. Report total payments for Atelier graphique.
+
+
+SELECT COUNT(p.amount) AS Total_payments,
+       SUM(p.amount) AS Total_Amount
+FROM payments p
+  JOIN customers c ON p.customernumber = c.customernumber
+WHERE c.customername = 'Atelier graphique';
+
+
+
+40. How many orders have been placed by Herkku Gifts?
+
+
+SELECT COUNT(o.ordernumber) AS Total_Orders
+FROM orders o
+  JOIN customers c ON o.customernumber = c.customernumber
+WHERE c.customername = 'Herkku Gifts';
+
+
+
+41. List the value of 'On Hold' orders.
+
+
+SELECT SUM(od.priceeach*od.QUANTITYORDERED) AS Total_value
+FROM orders o
+  JOIN orderdetails od ON o.ordernumber = od.ordernumber
+WHERE o.status = 'On Hold';
+
+
+
+42. What is the quantity on hand for products listed on 'On Hold' orders?
+
+
+SELECT p.productname,
+       p.quantityinstock
+FROM products p
+  JOIN orderdetails od ON p.productcode = od.productcode
+  JOIN orders o ON od.ordernumber = o.ordernumber
+WHERE o.status = 'On Hold';
+
+
+
+43. Report the number of customers in Denmark, Norway, and Sweden.
+
+SELECT country,
+       COUNT(customernumber) AS count_customer
+FROM customers
+WHERE REGEXP_LIKE (country,'Denmark|Norway|Sweden')
+GROUP BY country;
+
+
+
+44. What is the difference in days between the most recent and oldest order date in the Orders file?
+
+SELECT (MAX(orderdate) -MIN(orderdate)) AS differece
+FROM orders;
+
+
+
+45. What is the value of orders shipped in August 2004?
+
+SELECT SUM(od.priceeach*od.quantityordered) AS Total_value
+FROM calendar c
+  JOIN orders o ON c.calendar_date = o.shippeddate
+  JOIN orderdetails od ON o.ordernumber = od.ordernumber
+WHERE year_month IN '2004-08';
+
+
+
+46. Which orders have a value greater than $5,000?
+
+SELECT ordernumber
+FROM orderdetails
+GROUP BY ordernumber
+HAVING SUM(priceeach*quantityordered) > 5000;
+
+
+
+47. Report the total payments by date date
+
+
+SELECT paymentdate,
+       SUM(amount) as Total
+FROM payments
+GROUP BY paymentdate
+ORDER BY paymentdate;
+
+
+
+48. List the amount paid by each customer. Customer
+
+SELECT customernumber,
+       SUM(amount) AS total_amount
+FROM payments
+GROUP BY customernumber;
+
+
+
+49. Report the number of orders 'On Hold' for each customer.
+
+SELECT customernumber,
+       COUNT(status) AS count_onhold
+FROM orders
+WHERE status = 'On Hold'
+GROUP BY customernumber;
+
+
+
+50. List the names of customers and their corresponding order number where a particular order from that customer has a value greater than $25,000?
+
+SELECT c.customername,
+       o.ordernumber,
+       SUM(od.priceeach*od.quantityordered) AS total
+FROM orderdetails od
+  JOIN orders o ON od.ordernumber = o.ordernumber
+  JOIN customers c ON o.customernumber = c.customernumber
+GROUP BY c.customername,
+         o.ordernumber
+HAVING SUM(od.priceeach*od.quantityordered) > 25000
+ORDER BY c.customername;
+
+
+
+51. Compute the commission for each sales representative, assuming the commission is 5% of the value of an order. Sort by employee last name and first name.
+
+
+SELECT e.employeenumber,
+       e.firstname,
+       e.lastname,
+       SUM(0.05*(od.priceeach*quantityordered)) AS tot_amount
+FROM orderdetails od
+  JOIN orders o ON od.ordernumber = o.ordernumber
+  JOIN customers c ON o.customernumber = c.customernumber
+  JOIN employees e ON c.salesrepemployeenumber = e.employeenumber
+GROUP BY e.employeenumber,
+         e.firstname,
+         e.lastname
+ORDER BY e.lastname,
+         e.firstname;
+
+
+
+
+52. Compute the average time between order date and ship date for each customer ordered by the largest difference.
+
+SELECT customernumber,
+       AVG(shippeddate - orderdate) AS avgtime
+FROM orders
+GROUP BY customernumber
+ORDER BY avgtime DESC;
+
+
+
+53. Compute the revenue generated by each sales representative based on the orders from the customers they serve.
+
+SELECT e.employeenumber,
+       SUM(od.priceeach*od.quantityordered) AS revenue
+FROM orderdetails od
+  JOIN orders o ON od.ordernumber = o.ordernumber
+  JOIN customers c ON o.customernumber = c.customernumber
+  JOIN employees e ON c.salesrepemployeenumber = e.employeenumber
+GROUP BY e.employeenumber;
+
+
+
+54. Compute the profit generated by each sales representative based on the orders from the customers they serve. Sort by profit generated descending.
+
+SELECT c.salesrepemployeenumber,
+       SUM((od.priceeach - p.buyprice)*od.quantityordered) AS profit
+FROM orderdetails od
+  JOIN orders o ON od.ordernumber = o.ordernumber
+  JOIN customers c ON o.customernumber = c.customernumber
+  JOIN products p ON od.productcode = p.productcode
+GROUP BY c.salesrepemployeenumber
+ORDER BY profit desc
+
+
+
+
+55. Compute the revenue generated by each product, sorted by product name.
+
+SELECT p.productname,
+       SUM(od.priceeach*od.quantityordered) AS total_revenue
+FROM orderdetails od
+  JOIN products p ON od.productcode = p.productcode
+GROUP BY p.productname
+ORDER BY p.productname;
+
+
+
+
+
+
+56. Compute the profit generated by each product line, sorted by profit descending. Productline 
+
+SELECT p.productline,
+       SUM((od.priceeach - p.buyprice)*od.quantityordered) AS profit
+FROM orderdetails od
+  JOIN products p ON od.productcode = p.productcode
+GROUP BY p.productline
+ORDER BY profit DESC,
+         Productline
+
+
+
+57.  Compute the total value ordered, total amount paid, and their difference for each customer for orders placed in May 2004 and payments received in May 2004 (Hint; write separate queries for  'total paid' and 'total ordered' and join them .. you can use CTEs or Subqueries).
+
+WITH total_ordered AS
+(
+  SELECT o.customernumber,
+         SUM(od.priceeach*od.quantityordered) AS tot_ordered
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  WHERE EXTRACT(YEAR FROM o.orderdate) = 2004
+  AND   EXTRACT(MONTH FROM o.orderdate) = 05
+  GROUP BY o.customernumber
+),
+total_amount AS
+(
+  SELECT customernumber,
+         SUM(amount) AS tot_amount
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = 2004
+  AND   EXTRACT(MONTH FROM paymentdate) = 05
+  GROUP BY customernumber
+)
+SELECT c.customernumber,
+       NVL(c1.tot_ordered,0),
+       NVL(c2.tot_amount,0),
+       NVL(c1.tot_ordered,0) - NVL(c2.tot_amount,0) AS difference
+FROM customers c
+  LEFT JOIN total_ordered c1 ON c.customernumber = c1.customernumber
+  LEFT JOIN total_amount c2 ON c.customernumber = c2.customernumber
+
+
+
+58. What is the ratio the value of payments made to the value of orders received for each month of 2004. (i.e., divide the value of payments made by the value of orders received)?
+
+WITH total_ordered AS
+(
+  SELECT EXTRACT(MONTH FROM o.orderdate) AS Month_order,
+         SUM(od.priceeach*od.quantityordered) AS tot_ordered
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  WHERE EXTRACT(YEAR FROM o.orderdate) = 2004
+  GROUP BY EXTRACT(MONTH FROM o.orderdate)
+),
+total_amount AS
+(
+  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment,
+         SUM(amount) AS tot_amount
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = 2004
+  GROUP BY EXTRACT(MONTH FROM paymentdate)
+)
+SELECT t1.Month_order,
+       t1.tot_ordered,
+       t2.tot_amount,
+       (t2.tot_amount / t1.tot_ordered) AS ratio
+FROM total_ordered t1
+  JOIN total_amount t2 ON t1.Month_order = t2.Month_payment
+ORDER BY t1.Month_order
+
+
+
+59. What is the difference in the amount received for each month of 2004 compared to 2003?
+
+WITH total_amount_2003 AS
+(
+  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment_2003,
+         SUM(amount) AS tot_amount_2003
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = 2003
+  GROUP BY EXTRACT(MONTH FROM paymentdate)
+),
+total_amount_2004 AS
+(
+  SELECT EXTRACT(MONTH FROM paymentdate) AS Month_payment_2004,
+         SUM(amount) AS tot_amount_2004
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = 2004
+  GROUP BY EXTRACT(MONTH FROM paymentdate)
+)
+SELECT t1.Month_payment_2004 AS Months,
+       t1.tot_amount_2004,
+       t2.tot_amount_2003,
+       (t1.tot_amount_2004 - t2.tot_amount_2003) AS Difference
+FROM total_amount_2004 t1
+  JOIN total_amount_2003 t2 ON t1.Month_payment_2004 = t2.Month_payment_2003
+ORDER BY t1.Month_payment_2004
+
+
+
+60. Compute the ratio for each product of sales for 2003 versus 2004.
+
+WITH full_product AS
+(
+  SELECT od.productcode,
+         EXTRACT(YEAR FROM o.orderdate) AS YEAR,
+         SUM(od.priceeach*od.quantityordered) AS total_value
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  WHERE EXTRACT(YEAR FROM o.orderdate) = 2003
+  OR    EXTRACT(YEAR FROM o.orderdate) = 2004
+  GROUP BY od.productcode,
+           EXTRACT(YEAR FROM o.orderdate)
+),
+product_2004 AS
+(
+  SELECT productcode,
+         total_value AS value_2004
+  FROM full_product
+  WHERE YEAR = 2004
+),
+product_2003 AS
+(
+  SELECT productcode,
+         total_value AS value_2003
+  FROM full_product
+  WHERE YEAR = 2003
+)
+SELECT p.productcode,
+       t1.value_2004,
+       t2.value_2003,
+       (t2.value_2003 / t1.value_2004) AS ratio
+FROM products p
+  LEFT JOIN product_2004 t1 ON p.productcode = t1.productcode
+  LEFT JOIN product_2003 t2 ON p.productcode = t2.productcode
+ORDER BY p.productcode
+
+
+
+61. Compute the ratio of payments for each customer for 2003 versus 2004.
+
+WITH total_payments AS
+(
+  SELECT customernumber,
+         EXTRACT(YEAR FROM paymentdate) AS payment_year,
+         SUM(amount) AS total_amount
+  FROM payments
+  WHERE EXTRACT(YEAR FROM paymentdate) = 2003
+  OR    EXTRACT(YEAR FROM paymentdate) = 2004
+  GROUP BY customernumber,
+           EXTRACT(YEAR FROM paymentdate)
+),
+payment_2003 AS
+(
+  SELECT customernumber,
+         payment_year,
+         total_amount
+  FROM total_payments
+  WHERE payment_year = 2003
+),
+payment_2004 AS
+(
+  SELECT customernumber,
+         payment_year,
+         total_amount
+  FROM total_payments
+  WHERE payment_year = 2004
+)
+SELECT c.customernumber,
+       nvl(p1.total_amount,0) as amount2003,
+       nvl(p2.total_amount,0) as amount2004,
+       nvl((p1.total_amount/p2.total_amount),0) as ratio 
+FROM customers c
+  left  JOIN payment_2003 p1 ON c.customernumber = p1.customernumber
+  left JOIN payment_2004 p2 ON c.customernumber = p2.customernumber 
+order by c.customernumber 
+
+
+
+
+62. List all payments greater than twice the average payment.
+
+
+WITH avg_pay AS
+(
+  SELECT AVG(amount) AS average FROM payments
+)
+SELECT p.checknumber,
+       p.amount,
+       a.average
+FROM payments p
+  CROSS JOIN avg_pay a
+WHERE p.amount >(2*a.average)
+
+
+
+
+
+63. What is the percentage value of each product in inventory sorted by the highest percentage first. Take Inventory value as (quantityinhand*buy_price)
+
+WITH inventory AS
+(
+  SELECT SUM(quantityinstock*buyprice) AS total_inventory
+  FROM products
+)
+SELECT p.productcode,
+       (p.quantityinstock*p.buyprice) AS inventory_value,
+       ROUND((p.quantityinstock*p.buyprice) / i.total_inventory*100,2) AS inventory_percentage
+FROM products p
+  CROSS JOIN inventory i
+ORDER BY inventory_percentage DESC;
+
+
+
+
+64. Compute the revenue generated by each customer based on their orders. Also, show each customer's revenue as a percentage of total revenue. Sort by customer name
+
+WITH total_revenue AS
+(
+  SELECT SUM(quantityordered*priceeach) AS revenue
+  FROM orderdetails
+),
+customer_revenue AS
+(
+  SELECT o.customernumber,
+         SUM(od.quantityordered*od.priceeach) AS revenue_value
+  FROM orderdetails od
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  GROUP BY o.customernumber
+)
+SELECT c.customernumber,
+       c.customername,
+       COALESCE(cr.revenue_value,0) AS c_revenue,
+       ROUND((COALESCE(cr.revenue_value,0) / tr.revenue)*100,2) AS revenue_percentage
+FROM customers c
+  CROSS JOIN total_revenue tr
+  LEFT JOIN customer_revenue cr ON c.customernumber = cr.customernumber
+ORDER BY c.customername;
+
+
+
+
+65. Compute the profit generated by each customer based on their orders. Also, show each customer's profit as a percentage of total profit. Sort by profit descending.
+
+WITH cte1 AS
+(
+  SELECT o.customernumber,
+         SUM((od.quantityordered*od.priceeach) -(od.quantityordered*p.buyprice)) AS profit
+  FROM orderdetails od
+    JOIN products p ON od.productcode = p.productcode
+    JOIN orders o ON od.ordernumber = o.ordernumber
+  GROUP BY o.customernumber
+),
+cte2 AS
+(
+  SELECT SUM((od.quantityordered*od.priceeach) -(od.quantityordered*p.buyprice)) AS total_profit
+  FROM orderdetails od
+    JOIN products p ON od.productcode = p.productcode
+)
+SELECT c.customernumber,
+       COALESCE(c1.profit,0) AS Profit,
+       ROUND(COALESCE(c1.profit,0) / c2.total_profit*100,2) AS percentage
+FROM customers c
+  CROSS JOIN cte2 c2
+  LEFT JOIN cte1 c1 ON c.customernumber = c1.customernumber
+ORDER BY Profit DESC
+
+
+
+66. Which payments in any month and year are more than twice the average for that month and year (i.e. compare all payments in Oct 2004 with the average payment for Oct 2004)? Order the results by the date of the payment. You will need to use the date functions.
+
+WITH cte1 AS
+(
+  SELECT EXTRACT(MONTH FROM paymentdate) AS MONTH,
+         EXTRACT(YEAR FROM paymentdate) AS YEAR,
+         AVG(amount) AS average
+  FROM payments
+  GROUP BY EXTRACT(MONTH FROM paymentdate),
+           EXTRACT(YEAR FROM paymentdate)
+)
+SELECT p.checknumber,
+       p.amount,
+       c1.Month,
+       c1.Year,
+       c1.average
+FROM payments p
+  JOIN cte1 c1 ON EXTRACT (MONTH FROM p.paymentdate) = c1.Month
+WHERE p.amount > 2*c1.average
+AND   EXTRACT(YEAR FROM p.paymentdate) = c1.Year
+ORDER BY p.paymentdate;
+
+
+
+67. Report for each product, the percentage value of its stock on hand as a percentage of the stock on hand for the product line to which it belongs. Order the report by product line and percentage value within product line descending. Show percentages with two decimal places.
+
+WITH cte1 AS
+(
+  SELECT productline,
+         SUM(quantityinstock) AS productline_stock
+  FROM products
+  GROUP BY productline
+)
+SELECT p.productcode,
+       p.productline,
+       p.quantityinstock,
+       ROUND(p.quantityinstock / c.productline_stock*100,2) AS percentage
+FROM products p
+  JOIN cte1 c ON p.productline = c.productline
+ORDER BY p.productline,
+         percentage DESC
+
+
+68. For orders containing more than two products, report those products that constitute more than 50% of the value of the order.
+
+WITH cte1 AS
+(
+  SELECT ordernumber,
+         SUM(quantityordered*priceeach) AS total
+  FROM orderdetails
+  GROUP BY ordernumber
+  HAVING COUNT(ordernumber) > 2
+)
+SELECT c.ordernumber,
+       od.productcode,
+       (od.quantityordered*od.priceeach) AS amount,
+       c.total
+FROM orderdetails od
+  JOIN cte1 c ON od.ordernumber = c.ordernumber
+WHERE (od.quantityordered*od.priceeach) >(c.total / 2)
+
+
+
+
+
