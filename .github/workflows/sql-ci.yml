@@ -22,7 +22,7 @@ jobs:
         python-version: '3.10'
 
     - name: 📦 Install dependencies
-      run: pip install cx_Oracle
+      run: pip install oracledb
 
     - name: 🧪 Run tests and SQL guideline checks
       run: |
