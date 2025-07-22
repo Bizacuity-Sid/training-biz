@@ -1,2 +1,2 @@
-SELECT avg((msrp-buyprice)/buyprice*100) as average_markup
-from products;
+SELECT COUNT(employeeNumber) AS No_of_employee
+FROM employees

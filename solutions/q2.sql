@@ -1,4 +1,2 @@
-SELECT productname,
-       productline
+SELECT productName,productLine
 FROM products
-ORDER BY productline;

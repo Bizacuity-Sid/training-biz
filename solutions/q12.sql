@@ -1,6 +1,7 @@
-SELECT o.orderdate
-FROM orders o
-  INNER JOIN orderdetails od ON o.ordernumber = od.ordernumber
-  INNER JOIN products p ON od.productcode = p.productcode
-WHERE p.productName = '1940 Ford Pickup Truck'
-ORDER BY o.orderdate DESC;
+SELECT prod.ProductName,
+       ord.orderDate
+FROM products prod
+  INNER JOIN orderDetails ON orderDetails.productCode = prod.productCode
+  INNER JOIN orders ord ON ord.orderNumber = orderDetails.orderNumber
+WHERE prod.productname LIKE '1940 Ford%'
+ORDER BY ord.orderDate DESC

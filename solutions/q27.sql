@@ -1,6 +1,6 @@
-SELECT p.productname
-FROM products p
-  INNER JOIN orderdetails od ON p.productcode = od.productcode
-  INNER JOIN orders o ON od.ordernumber = o.ordernumber
-  INNER JOIN customers c ON o.customernumber = c.customernumber
-WHERE c.customername = 'Herkku Gifts';
+SELECT Prod.productName
+FROM customers custom
+  INNER JOIN orders ON orders.customerNumber = custom.customerNumber
+  INNER JOIN orderDetails ON orderDetails.orderNumber = orders.orderNumber
+  INNER JOIN products prod ON prod.productCode = orderDetails.productCode
+WHERE custom.customerName = 'Herkku Gifts'

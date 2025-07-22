@@ -1,3 +1,3 @@
-select * 
-from employees 
-where reportsto IS NULL;
+SELECT (firstname|| ' ' ||lastname) as Top_employee
+FROM employees
+WHERE reportsTo IS NULL;

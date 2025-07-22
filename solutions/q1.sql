@@ -1,5 +1,4 @@
-SELECT *
-FROM offices
-ORDER BY country,
-         state,
-         city;
+SELECT * FROM offices
+        ORDER BY country, 
+                            state,
+                            city

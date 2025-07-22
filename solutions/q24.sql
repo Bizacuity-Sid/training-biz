@@ -1,3 +1,3 @@
-select productvendor 
+SELECT productVendor
 from products
-where productvendor LIKE '%Diecast';
+where productVendor like '%Diecast'

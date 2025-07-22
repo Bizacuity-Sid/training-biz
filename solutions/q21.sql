@@ -1,3 +1,3 @@
-select * 
-from products 
-where substr(productcode,2,3)='700';
+SELECT productCode
+ FROM products
+where productCode like 'S700%'

@@ -1,5 +1,17 @@
-SELECT DISTINCT p.productname
-FROM products p
-  INNER JOIN orderdetails od ON p.productcode = od.productcode
-  INNER JOIN orders o ON od.ordernumber = o.ordernumber
-WHERE TO_CHAR(o.orderdate,'DY') = 'MON';
+SELECT prod.ProductName
+FROM products prod
+  INNER JOIN orderDetails ord ON ord.productCode = prod.productCode
+WHERE ord.priceeach >= 2*prod.buyprice
+
+
+
+
+
+
+List the products ordered on a Monday.
+SELECT products.ProductName,
+ orders.orderDate
+FROM products
+  INNER JOIN orderDetails ON orderDetails.productCode = products.productCode
+  INNER JOIN orders ON orders.orderNumber = orderDetails.orderNumber
+WHERE TO_CHAR(orders.orderDate,'D') = 2

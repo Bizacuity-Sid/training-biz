@@ -1,4 +1,4 @@
-select (firstname||' '||lastname) as fullname 
-from employees e
-where firstname LIKE '%[^a-z]%'
-or lastname LIKE '%[^a-z]%';
+SELECT firstname, lastname
+ FROM employees
+ WHERE REGEXP_LIKE(firstname, '[^A-Za-z]') or 
+ REGEXP_LIKE(lastname, '[^A-Za-z]');

@@ -1,3 +1,3 @@
-select customername 
-from customers
-where REGEXP_LIKE(customerName,'[[:digit:]]');
+SELECT customerName
+ FROM customers
+  WHERE REGEXP_LIKE(customerName, '[[:digit:]]');

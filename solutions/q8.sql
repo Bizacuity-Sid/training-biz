@@ -1,7 +1,3 @@
-SELECT customerName,city
+SELECT customername,city
 FROM customers
-WHERE salesrepemployeenumber IS NULL;
-
-
-
-;
+WHERE salesREpEmployeeNumber IS NULL

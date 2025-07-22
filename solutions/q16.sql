@@ -1,3 +1,3 @@
-select distinct productname
- from products 
-where productname LIKE '%Ship';
+SELECT  products.ProductName 
+FROM products
+WHERE  products.ProductName  LIKE '%Ship'

@@ -1,3 +1,3 @@
-select *
- from products 
-where productName Like '%Ford%';
+SELECT  products.ProductName 
+ from products
+where  products.ProductName  Like '%Ford%'

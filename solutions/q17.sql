@@ -1,3 +1,3 @@
-select *
- from products 
-where substr(productcode,2,3)='700' AND TO_NUMBER(substr(productcode,6))>=1000 AND TO_NUMBER(substr(productcode,6))<1500;
+SELECT  products.ProductCode
+FROM products
+WHERE productCode BETWEEN 'S700_1000' AND 'S700_1499'

@@ -1,3 +1,2 @@
-SELECT DISTINCT productLine
-FROM products
-WHERE productLine LIKE '%Cars%'
+SELECT productLine FROM ProductLines
+WHERE productLine like '%Cars%'

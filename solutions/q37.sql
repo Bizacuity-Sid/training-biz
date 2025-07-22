@@ -1,5 +1,2 @@
-SELECT SUM(amount),
-       customernumber
-FROM payments
-GROUP BY customernumber
-ORDER BY customernumber;
+SELECT AVG((MSRP- buyPrice)*100.0/ buyPrice) as markup_Per
+FROM products

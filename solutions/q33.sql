@@ -1,2 +1,2 @@
-SELECT  count(distinct productcode) as total_products
-from products;
+SELECT SUM(amount) AS Total_Payments
+FROM Payments

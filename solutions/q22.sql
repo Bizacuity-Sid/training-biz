@@ -1,3 +1,6 @@
-select (firstname||' '||lastname)AS fullname 
-from employees
-where firstname = 'Larry' OR firstName = 'Barry' OR lastname = 'Larry' OR lastname='Barry';
+SELECT firstname || ' ' || lastname AS Employee
+FROM employees
+WHERE firstname = 'Larry'
+OR    lastname = 'Larry'
+OR    firstname = 'Barry'
+OR    lastname = 'Barry'

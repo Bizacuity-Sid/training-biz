@@ -1,5 +1,5 @@
-SELECT p.productname,
-       o.orderdate
-FROM products p
-  INNER JOIN orderdetails od ON p.productcode = od.productcode
-  INNER JOIN orders o ON od.ordernumber = o.ordernumber;
+SELECT prod.*
+FROM products prod
+  INNER JOIN orderdetails ordet ON prod.productCode = ordet.productCode
+  INNER JOIN orders ord ON ord.orderNumber = ordet.orderNumber
+ORDER BY ord.orderDate

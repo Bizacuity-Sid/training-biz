@@ -1,4 +1,4 @@
-SELECT (e.firstname|| ' ' ||e.lastname) AS employeename
-FROM employees e
-  INNER JOIN offices o ON e.officecode = o.officecode
-WHERE o.city = 'Boston';
+SELECT emp.firstName || ' ' || emp.Lastname AS Employee_Name
+FROM employees emp
+  INNER JOIN offices ofc ON emp.officecode = ofc.officecode
+WHERE ofc.city = 'Boston'

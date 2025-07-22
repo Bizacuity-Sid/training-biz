@@ -1,3 +1,4 @@
-select * 
-from products
-where lower(productname) LIKE '%ship%' OR lower(productName) LIKE '%boat%';
+SELECT productname
+FROM products
+WHERE productname LIKE '%Ship%' or
+      productname LIKE '%Boat%'
