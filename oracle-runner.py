@@ -9,6 +9,10 @@ def run_sql_file(sql_path, output_path, conn_str):
         connection = oracledb.connect(conn_str)
         cursor = connection.cursor()
 
+        # Set schema to classicmodels
+        cursor.execute("ALTER SESSION SET CURRENT_SCHEMA = classicmodels")
+
+        # Execute the SQL from file
         cursor.execute(sql)
         rows = cursor.fetchall()
 
@@ -21,4 +25,4 @@ def run_sql_file(sql_path, output_path, conn_str):
 
     except Exception as e:
         print(f"❌ Error executing {sql_path}: {e}", file=sys.stderr)
-        sys.exit(1)  # causes the GitHub Actions step to fail
+        sys.exit(1)
