@@ -2,12 +2,8 @@ name: Oracle SQL Validation
 
 on:
   push:
-    paths:
-      - 'queries/**'
-      - 'solutions/**'
-      - 'sql_guideline_checker.py'
-      - 'oracle_runner.py'
-      - '.github/workflows/sql_ci.yml'
+    branches:
+        -  main
 
 jobs:
   validate-sql:
